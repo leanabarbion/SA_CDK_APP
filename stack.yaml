@@ -1,0 +1,903 @@
+Resources:
+  KnowledgeCatalogB07D1A9A:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: course
+          AttributeType: S
+        - AttributeName: name
+          AttributeType: S
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: year
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+        - IndexName: id-index
+          KeySchema:
+            - AttributeName: id
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: course-index
+          KeySchema:
+            - AttributeName: course
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: year-index
+          KeySchema:
+            - AttributeName: year
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+      KeySchema:
+        - AttributeName: course
+          KeyType: HASH
+        - AttributeName: name
+          KeyType: RANGE
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/KnowledgeCatalog/Resource
+  AddItemFunctionServiceRole4B32CFEC:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/AddItemFunction/ServiceRole/Resource
+  AddItemFunctionServiceRoleDefaultPolicyC001043E:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: dynamodb:PutItem
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - KnowledgeCatalogB07D1A9A
+                - Arn
+        Version: "2012-10-17"
+      PolicyName: AddItemFunctionServiceRoleDefaultPolicyC001043E
+      Roles:
+        - Ref: AddItemFunctionServiceRole4B32CFEC
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/AddItemFunction/ServiceRole/DefaultPolicy/Resource
+  AddItemFunction7940E69E:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-767397801789-eu-west-1
+        S3Key: 3264b2db3776639dee018f66d8d8026b0eb0261db2bd4c3034993b64b6d6e486.zip
+      Environment:
+        Variables:
+          TABLE:
+            Ref: KnowledgeCatalogB07D1A9A
+      Handler: lambda_function.handler
+      Role:
+        Fn::GetAtt:
+          - AddItemFunctionServiceRole4B32CFEC
+          - Arn
+      Runtime: python3.12
+    DependsOn:
+      - AddItemFunctionServiceRoleDefaultPolicyC001043E
+      - AddItemFunctionServiceRole4B32CFEC
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/AddItemFunction/Resource
+      aws:asset:path: asset.3264b2db3776639dee018f66d8d8026b0eb0261db2bd4c3034993b64b6d6e486
+      aws:asset:is-bundled: false
+      aws:asset:property: Code
+  CatalogApi2F31A828:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Description: Knowledge Catalog.
+      Name: Catalog Service
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/Resource
+  CatalogApiDeployment8EAAA1FA663d6c9e601b7224eb6743c268892121:
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      Description: Knowledge Catalog.
+      RestApiId:
+        Ref: CatalogApi2F31A828
+    DependsOn:
+      - CatalogApiitemsidDELETEFC8DDB93
+      - CatalogApiitemsidGETC059AD34
+      - CatalogApiitemsidF803049B
+      - CatalogApiitemscoursecourseGET628BEA5A
+      - CatalogApiitemscoursecourseA093C769
+      - CatalogApiitemscourse558F854A
+      - CatalogApiitemsGET0092E5E4
+      - CatalogApiitemsPOSTFC684148
+      - CatalogApiitems4CBFC7E1
+      - CatalogApiitemsyearyearGETB66518B6
+      - CatalogApiitemsyearyear6D5A0A52
+      - CatalogApiitemsyear3CB48041
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/Deployment/Resource
+  CatalogApiDeploymentStageprodE57C8640:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      DeploymentId:
+        Ref: CatalogApiDeployment8EAAA1FA663d6c9e601b7224eb6743c268892121
+      RestApiId:
+        Ref: CatalogApi2F31A828
+      StageName: prod
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/DeploymentStage.prod/Resource
+  CatalogApiitems4CBFC7E1:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Fn::GetAtt:
+          - CatalogApi2F31A828
+          - RootResourceId
+      PathPart: items
+      RestApiId:
+        Ref: CatalogApi2F31A828
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/Default/items/Resource
+  CatalogApiitemsPOSTApiPermissionSaCdkAppStackCatalogApiCEB8153FPOSTitemsEED163C1:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - AddItemFunction7940E69E
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:aws:execute-api:eu-west-1:767397801789:"
+            - Ref: CatalogApi2F31A828
+            - /
+            - Ref: CatalogApiDeploymentStageprodE57C8640
+            - /POST/items
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/Default/items/POST/ApiPermission.SaCdkAppStackCatalogApiCEB8153F.POST..items
+  CatalogApiitemsPOSTApiPermissionTestSaCdkAppStackCatalogApiCEB8153FPOSTitems07EF2CB6:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - AddItemFunction7940E69E
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:aws:execute-api:eu-west-1:767397801789:"
+            - Ref: CatalogApi2F31A828
+            - /test-invoke-stage/POST/items
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/Default/items/POST/ApiPermission.Test.SaCdkAppStackCatalogApiCEB8153F.POST..items
+  CatalogApiitemsPOSTFC684148:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: POST
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - AddItemFunction7940E69E
+                  - Arn
+              - /invocations
+      ResourceId:
+        Ref: CatalogApiitems4CBFC7E1
+      RestApiId:
+        Ref: CatalogApi2F31A828
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/Default/items/POST/Resource
+  CatalogApiitemsidF803049B:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Ref: CatalogApiitems4CBFC7E1
+      PathPart: "{id}"
+      RestApiId:
+        Ref: CatalogApi2F31A828
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/Default/items/{id}/Resource
+  CatalogApiitemsidDELETEApiPermissionSaCdkAppStackCatalogApiCEB8153FDELETEitemsidB4FA85B5:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - DeleteItemFunction6C994993
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:aws:execute-api:eu-west-1:767397801789:"
+            - Ref: CatalogApi2F31A828
+            - /
+            - Ref: CatalogApiDeploymentStageprodE57C8640
+            - /DELETE/items/*
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/Default/items/{id}/DELETE/ApiPermission.SaCdkAppStackCatalogApiCEB8153F.DELETE..items.{id}
+  CatalogApiitemsidDELETEApiPermissionTestSaCdkAppStackCatalogApiCEB8153FDELETEitemsid52FC34A8:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - DeleteItemFunction6C994993
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:aws:execute-api:eu-west-1:767397801789:"
+            - Ref: CatalogApi2F31A828
+            - /test-invoke-stage/DELETE/items/*
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/Default/items/{id}/DELETE/ApiPermission.Test.SaCdkAppStackCatalogApiCEB8153F.DELETE..items.{id}
+  CatalogApiitemsidDELETEFC8DDB93:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: DELETE
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - DeleteItemFunction6C994993
+                  - Arn
+              - /invocations
+      ResourceId:
+        Ref: CatalogApiitemsidF803049B
+      RestApiId:
+        Ref: CatalogApi2F31A828
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/Default/items/{id}/DELETE/Resource
+  CatalogApiitemsidGETApiPermissionSaCdkAppStackCatalogApiCEB8153FGETitemsid0EDF56C3:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - RetrieveItemFunction6C30F7F2
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:aws:execute-api:eu-west-1:767397801789:"
+            - Ref: CatalogApi2F31A828
+            - /
+            - Ref: CatalogApiDeploymentStageprodE57C8640
+            - /GET/items/*
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/Default/items/{id}/GET/ApiPermission.SaCdkAppStackCatalogApiCEB8153F.GET..items.{id}
+  CatalogApiitemsidGETApiPermissionTestSaCdkAppStackCatalogApiCEB8153FGETitemsidA92E5AF0:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - RetrieveItemFunction6C30F7F2
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:aws:execute-api:eu-west-1:767397801789:"
+            - Ref: CatalogApi2F31A828
+            - /test-invoke-stage/GET/items/*
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/Default/items/{id}/GET/ApiPermission.Test.SaCdkAppStackCatalogApiCEB8153F.GET..items.{id}
+  CatalogApiitemsidGETC059AD34:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: GET
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - RetrieveItemFunction6C30F7F2
+                  - Arn
+              - /invocations
+      ResourceId:
+        Ref: CatalogApiitemsidF803049B
+      RestApiId:
+        Ref: CatalogApi2F31A828
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/Default/items/{id}/GET/Resource
+  CatalogApiitemsGETApiPermissionSaCdkAppStackCatalogApiCEB8153FGETitems0DA1CECC:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - RetrieveAllItemFunctionB0B06EA4
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:aws:execute-api:eu-west-1:767397801789:"
+            - Ref: CatalogApi2F31A828
+            - /
+            - Ref: CatalogApiDeploymentStageprodE57C8640
+            - /GET/items
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/Default/items/GET/ApiPermission.SaCdkAppStackCatalogApiCEB8153F.GET..items
+  CatalogApiitemsGETApiPermissionTestSaCdkAppStackCatalogApiCEB8153FGETitems1536920B:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - RetrieveAllItemFunctionB0B06EA4
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:aws:execute-api:eu-west-1:767397801789:"
+            - Ref: CatalogApi2F31A828
+            - /test-invoke-stage/GET/items
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/Default/items/GET/ApiPermission.Test.SaCdkAppStackCatalogApiCEB8153F.GET..items
+  CatalogApiitemsGET0092E5E4:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: GET
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - RetrieveAllItemFunctionB0B06EA4
+                  - Arn
+              - /invocations
+      ResourceId:
+        Ref: CatalogApiitems4CBFC7E1
+      RestApiId:
+        Ref: CatalogApi2F31A828
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/Default/items/GET/Resource
+  CatalogApiitemscourse558F854A:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Ref: CatalogApiitems4CBFC7E1
+      PathPart: course
+      RestApiId:
+        Ref: CatalogApi2F31A828
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/Default/items/course/Resource
+  CatalogApiitemscoursecourseA093C769:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Ref: CatalogApiitemscourse558F854A
+      PathPart: "{course}"
+      RestApiId:
+        Ref: CatalogApi2F31A828
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/Default/items/course/{course}/Resource
+  CatalogApiitemscoursecourseGETApiPermissionSaCdkAppStackCatalogApiCEB8153FGETitemscoursecourseD9E41361:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - RetrieveItemByCourseFunction68837164
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:aws:execute-api:eu-west-1:767397801789:"
+            - Ref: CatalogApi2F31A828
+            - /
+            - Ref: CatalogApiDeploymentStageprodE57C8640
+            - /GET/items/course/*
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/Default/items/course/{course}/GET/ApiPermission.SaCdkAppStackCatalogApiCEB8153F.GET..items.course.{course}
+  CatalogApiitemscoursecourseGETApiPermissionTestSaCdkAppStackCatalogApiCEB8153FGETitemscoursecourse8D7E4B7C:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - RetrieveItemByCourseFunction68837164
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:aws:execute-api:eu-west-1:767397801789:"
+            - Ref: CatalogApi2F31A828
+            - /test-invoke-stage/GET/items/course/*
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/Default/items/course/{course}/GET/ApiPermission.Test.SaCdkAppStackCatalogApiCEB8153F.GET..items.course.{course}
+  CatalogApiitemscoursecourseGET628BEA5A:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: GET
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - RetrieveItemByCourseFunction68837164
+                  - Arn
+              - /invocations
+      ResourceId:
+        Ref: CatalogApiitemscoursecourseA093C769
+      RestApiId:
+        Ref: CatalogApi2F31A828
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/Default/items/course/{course}/GET/Resource
+  CatalogApiitemsyear3CB48041:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Ref: CatalogApiitems4CBFC7E1
+      PathPart: year
+      RestApiId:
+        Ref: CatalogApi2F31A828
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/Default/items/year/Resource
+  CatalogApiitemsyearyear6D5A0A52:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Ref: CatalogApiitemsyear3CB48041
+      PathPart: "{year}"
+      RestApiId:
+        Ref: CatalogApi2F31A828
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/Default/items/year/{year}/Resource
+  CatalogApiitemsyearyearGETApiPermissionSaCdkAppStackCatalogApiCEB8153FGETitemsyearyearC3958483:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - RetrieveItemByYearFunction07D9DE56
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:aws:execute-api:eu-west-1:767397801789:"
+            - Ref: CatalogApi2F31A828
+            - /
+            - Ref: CatalogApiDeploymentStageprodE57C8640
+            - /GET/items/year/*
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/Default/items/year/{year}/GET/ApiPermission.SaCdkAppStackCatalogApiCEB8153F.GET..items.year.{year}
+  CatalogApiitemsyearyearGETApiPermissionTestSaCdkAppStackCatalogApiCEB8153FGETitemsyearyear840B319F:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - RetrieveItemByYearFunction07D9DE56
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:aws:execute-api:eu-west-1:767397801789:"
+            - Ref: CatalogApi2F31A828
+            - /test-invoke-stage/GET/items/year/*
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/Default/items/year/{year}/GET/ApiPermission.Test.SaCdkAppStackCatalogApiCEB8153F.GET..items.year.{year}
+  CatalogApiitemsyearyearGETB66518B6:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: GET
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - RetrieveItemByYearFunction07D9DE56
+                  - Arn
+              - /invocations
+      ResourceId:
+        Ref: CatalogApiitemsyearyear6D5A0A52
+      RestApiId:
+        Ref: CatalogApi2F31A828
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CatalogApi/Default/items/year/{year}/GET/Resource
+  DeleteItemFunctionServiceRoleB2BAE34D:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/DeleteItemFunction/ServiceRole/Resource
+  DeleteItemFunctionServiceRoleDefaultPolicy7767DA08:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - dynamodb:DeleteItem
+              - dynamodb:Query
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - KnowledgeCatalogB07D1A9A
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - KnowledgeCatalogB07D1A9A
+                        - Arn
+                    - /index/id-index
+        Version: "2012-10-17"
+      PolicyName: DeleteItemFunctionServiceRoleDefaultPolicy7767DA08
+      Roles:
+        - Ref: DeleteItemFunctionServiceRoleB2BAE34D
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/DeleteItemFunction/ServiceRole/DefaultPolicy/Resource
+  DeleteItemFunction6C994993:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-767397801789-eu-west-1
+        S3Key: 4b97a220622f99bfa94f69dc5b36da0770259394c8692565cd2cc80aa55df8dd.zip
+      Environment:
+        Variables:
+          TABLE:
+            Ref: KnowledgeCatalogB07D1A9A
+      Handler: lambda_function.handler
+      Role:
+        Fn::GetAtt:
+          - DeleteItemFunctionServiceRoleB2BAE34D
+          - Arn
+      Runtime: python3.12
+    DependsOn:
+      - DeleteItemFunctionServiceRoleDefaultPolicy7767DA08
+      - DeleteItemFunctionServiceRoleB2BAE34D
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/DeleteItemFunction/Resource
+      aws:asset:path: asset.4b97a220622f99bfa94f69dc5b36da0770259394c8692565cd2cc80aa55df8dd
+      aws:asset:is-bundled: false
+      aws:asset:property: Code
+  RetrieveItemFunctionServiceRoleDA8354CA:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/RetrieveItemFunction/ServiceRole/Resource
+  RetrieveItemFunctionServiceRoleDefaultPolicy0D31FBCC:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - dynamodb:GetItem
+              - dynamodb:Query
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - KnowledgeCatalogB07D1A9A
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - KnowledgeCatalogB07D1A9A
+                        - Arn
+                    - /index/id-index
+        Version: "2012-10-17"
+      PolicyName: RetrieveItemFunctionServiceRoleDefaultPolicy0D31FBCC
+      Roles:
+        - Ref: RetrieveItemFunctionServiceRoleDA8354CA
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/RetrieveItemFunction/ServiceRole/DefaultPolicy/Resource
+  RetrieveItemFunction6C30F7F2:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-767397801789-eu-west-1
+        S3Key: 026323a9aa84e01510d9025b494d423845392fcc484d3dfd5ef3b85c7f4a9c8f.zip
+      Environment:
+        Variables:
+          TABLE:
+            Ref: KnowledgeCatalogB07D1A9A
+      Handler: lambda_function.handler
+      Role:
+        Fn::GetAtt:
+          - RetrieveItemFunctionServiceRoleDA8354CA
+          - Arn
+      Runtime: python3.12
+    DependsOn:
+      - RetrieveItemFunctionServiceRoleDefaultPolicy0D31FBCC
+      - RetrieveItemFunctionServiceRoleDA8354CA
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/RetrieveItemFunction/Resource
+      aws:asset:path: asset.026323a9aa84e01510d9025b494d423845392fcc484d3dfd5ef3b85c7f4a9c8f
+      aws:asset:is-bundled: false
+      aws:asset:property: Code
+  RetrieveAllItemFunctionServiceRoleFCF7DA5E:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/RetrieveAllItemFunction/ServiceRole/Resource
+  RetrieveAllItemFunctionServiceRoleDefaultPolicy65F95A48:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: dynamodb:Scan
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - KnowledgeCatalogB07D1A9A
+                - Arn
+        Version: "2012-10-17"
+      PolicyName: RetrieveAllItemFunctionServiceRoleDefaultPolicy65F95A48
+      Roles:
+        - Ref: RetrieveAllItemFunctionServiceRoleFCF7DA5E
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/RetrieveAllItemFunction/ServiceRole/DefaultPolicy/Resource
+  RetrieveAllItemFunctionB0B06EA4:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-767397801789-eu-west-1
+        S3Key: 035beb7b3a31bf4ecc343a7d44b087185572e59838a3767724eaec2871183bc8.zip
+      Environment:
+        Variables:
+          TABLE:
+            Ref: KnowledgeCatalogB07D1A9A
+      Handler: lambda_function.handler
+      Role:
+        Fn::GetAtt:
+          - RetrieveAllItemFunctionServiceRoleFCF7DA5E
+          - Arn
+      Runtime: python3.12
+    DependsOn:
+      - RetrieveAllItemFunctionServiceRoleDefaultPolicy65F95A48
+      - RetrieveAllItemFunctionServiceRoleFCF7DA5E
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/RetrieveAllItemFunction/Resource
+      aws:asset:path: asset.035beb7b3a31bf4ecc343a7d44b087185572e59838a3767724eaec2871183bc8
+      aws:asset:is-bundled: false
+      aws:asset:property: Code
+  RetrieveItemByCourseFunctionServiceRole7EA8439F:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/RetrieveItemByCourseFunction/ServiceRole/Resource
+  RetrieveItemByCourseFunctionServiceRoleDefaultPolicyA26C105F:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: dynamodb:Query
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - Fn::GetAtt:
+                      - KnowledgeCatalogB07D1A9A
+                      - Arn
+                  - /index/course-index
+        Version: "2012-10-17"
+      PolicyName: RetrieveItemByCourseFunctionServiceRoleDefaultPolicyA26C105F
+      Roles:
+        - Ref: RetrieveItemByCourseFunctionServiceRole7EA8439F
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/RetrieveItemByCourseFunction/ServiceRole/DefaultPolicy/Resource
+  RetrieveItemByCourseFunction68837164:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-767397801789-eu-west-1
+        S3Key: 15cdabcacfadd07bf6b10f6972f53e4ca1520cd5fb636a24ac0e558678694635.zip
+      Environment:
+        Variables:
+          TABLE:
+            Ref: KnowledgeCatalogB07D1A9A
+      Handler: lambda_function.handler
+      Role:
+        Fn::GetAtt:
+          - RetrieveItemByCourseFunctionServiceRole7EA8439F
+          - Arn
+      Runtime: python3.12
+    DependsOn:
+      - RetrieveItemByCourseFunctionServiceRoleDefaultPolicyA26C105F
+      - RetrieveItemByCourseFunctionServiceRole7EA8439F
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/RetrieveItemByCourseFunction/Resource
+      aws:asset:path: asset.15cdabcacfadd07bf6b10f6972f53e4ca1520cd5fb636a24ac0e558678694635
+      aws:asset:is-bundled: false
+      aws:asset:property: Code
+  RetrieveItemByYearFunctionServiceRole92B797DB:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/RetrieveItemByYearFunction/ServiceRole/Resource
+  RetrieveItemByYearFunctionServiceRoleDefaultPolicy2B18A5DC:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: dynamodb:Query
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - Fn::GetAtt:
+                      - KnowledgeCatalogB07D1A9A
+                      - Arn
+                  - /index/year-index
+        Version: "2012-10-17"
+      PolicyName: RetrieveItemByYearFunctionServiceRoleDefaultPolicy2B18A5DC
+      Roles:
+        - Ref: RetrieveItemByYearFunctionServiceRole92B797DB
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/RetrieveItemByYearFunction/ServiceRole/DefaultPolicy/Resource
+  RetrieveItemByYearFunction07D9DE56:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-767397801789-eu-west-1
+        S3Key: 4e9ea814429e3721b9f30c6dc83aad83f9821a99470090fa49589edfaf568fe1.zip
+      Environment:
+        Variables:
+          TABLE:
+            Ref: KnowledgeCatalogB07D1A9A
+      Handler: lambda_function.handler
+      Role:
+        Fn::GetAtt:
+          - RetrieveItemByYearFunctionServiceRole92B797DB
+          - Arn
+      Runtime: python3.12
+    DependsOn:
+      - RetrieveItemByYearFunctionServiceRoleDefaultPolicy2B18A5DC
+      - RetrieveItemByYearFunctionServiceRole92B797DB
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/RetrieveItemByYearFunction/Resource
+      aws:asset:path: asset.4e9ea814429e3721b9f30c6dc83aad83f9821a99470090fa49589edfaf568fe1
+      aws:asset:is-bundled: false
+      aws:asset:property: Code
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Analytics: v2:deflate64:H4sIAAAAAAAA/02OQU/DMAyFf8vuqaFUiPMG4oaoOu6Tm5outEmq2lFVVfnvKOkQO73P9vOzn6CsXuDxgAsXuhuK0bSwnQX1oHDhy9atDq3vWti+sB1JvX67DFGNaNsOYXsPTovxLo3uuabZGmbjXVQGLWyN3/ez1n40es2+TFFxdUFmEoZjEsUVnIIeSE7IpHAyPQotuMLWEMtxMjnrhm80jX615CR176qzYJ+v7tAQ+zBrypl/xS1o5w+Sq+9Sa6cY/335sRRkXJ8cn0GmIPfrUdWrXL17qKAs4fnww8YUc3BiLEGz6y+tvbIycwEAAA==
+    Metadata:
+      aws:cdk:path: SaCdkAppStack/CDKMetadata/Default
+Outputs:
+  CatalogApiEndpointCF0B2319:
+    Value:
+      Fn::Join:
+        - ""
+        - - https://
+          - Ref: CatalogApi2F31A828
+          - .execute-api.eu-west-1.
+          - Ref: AWS::URLSuffix
+          - /
+          - Ref: CatalogApiDeploymentStageprodE57C8640
+          - /
+Parameters:
+  BootstrapVersion:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /cdk-bootstrap/hnb659fds/version
+    Description: Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]
+Rules:
+  CheckBootstrapVersion:
+    Assertions:
+      - Assert:
+          Fn::Not:
+            - Fn::Contains:
+                - - "1"
+                  - "2"
+                  - "3"
+                  - "4"
+                  - "5"
+                - Ref: BootstrapVersion
+        AssertDescription: CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.
+
