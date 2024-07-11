@@ -1,0 +1,347 @@
+{
+  "version": "36.0.0",
+  "artifacts": {
+    "SaCdkAppStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "SaCdkAppStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "SaCdkAppStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://767397801789/eu-west-1",
+      "properties": {
+        "templateFile": "SaCdkAppStack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::767397801789:role/cdk-hnb659fds-deploy-role-767397801789-eu-west-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::767397801789:role/cdk-hnb659fds-cfn-exec-role-767397801789-eu-west-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-767397801789-eu-west-1/7ba03aff5ac85a8b367465f67be95ec4ac4a2ac673844b109f7b5d73e300e362.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "SaCdkAppStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::767397801789:role/cdk-hnb659fds-lookup-role-767397801789-eu-west-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "SaCdkAppStack.assets"
+      ],
+      "metadata": {
+        "/SaCdkAppStack/KnowledgeCatalog/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "KnowledgeCatalogB07D1A9A"
+          }
+        ],
+        "/SaCdkAppStack/AddItemFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AddItemFunctionServiceRole4B32CFEC"
+          }
+        ],
+        "/SaCdkAppStack/AddItemFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AddItemFunctionServiceRoleDefaultPolicyC001043E"
+          }
+        ],
+        "/SaCdkAppStack/AddItemFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AddItemFunction7940E69E"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApi2F31A828"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Deployment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiDeployment8EAAA1FA663d6c9e601b7224eb6743c268892121"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/DeploymentStage.prod/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiDeploymentStageprodE57C8640"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Endpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiEndpointCF0B2319"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Default/items/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiitems4CBFC7E1"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Default/items/POST/ApiPermission.SaCdkAppStackCatalogApiCEB8153F.POST..items": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiitemsPOSTApiPermissionSaCdkAppStackCatalogApiCEB8153FPOSTitemsEED163C1"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Default/items/POST/ApiPermission.Test.SaCdkAppStackCatalogApiCEB8153F.POST..items": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiitemsPOSTApiPermissionTestSaCdkAppStackCatalogApiCEB8153FPOSTitems07EF2CB6"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Default/items/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiitemsPOSTFC684148"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Default/items/{id}/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiitemsidF803049B"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Default/items/{id}/DELETE/ApiPermission.SaCdkAppStackCatalogApiCEB8153F.DELETE..items.{id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiitemsidDELETEApiPermissionSaCdkAppStackCatalogApiCEB8153FDELETEitemsidB4FA85B5"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Default/items/{id}/DELETE/ApiPermission.Test.SaCdkAppStackCatalogApiCEB8153F.DELETE..items.{id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiitemsidDELETEApiPermissionTestSaCdkAppStackCatalogApiCEB8153FDELETEitemsid52FC34A8"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Default/items/{id}/DELETE/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiitemsidDELETEFC8DDB93"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Default/items/{id}/GET/ApiPermission.SaCdkAppStackCatalogApiCEB8153F.GET..items.{id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiitemsidGETApiPermissionSaCdkAppStackCatalogApiCEB8153FGETitemsid0EDF56C3"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Default/items/{id}/GET/ApiPermission.Test.SaCdkAppStackCatalogApiCEB8153F.GET..items.{id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiitemsidGETApiPermissionTestSaCdkAppStackCatalogApiCEB8153FGETitemsidA92E5AF0"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Default/items/{id}/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiitemsidGETC059AD34"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Default/items/GET/ApiPermission.SaCdkAppStackCatalogApiCEB8153F.GET..items": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiitemsGETApiPermissionSaCdkAppStackCatalogApiCEB8153FGETitems0DA1CECC"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Default/items/GET/ApiPermission.Test.SaCdkAppStackCatalogApiCEB8153F.GET..items": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiitemsGETApiPermissionTestSaCdkAppStackCatalogApiCEB8153FGETitems1536920B"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Default/items/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiitemsGET0092E5E4"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Default/items/course/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiitemscourse558F854A"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Default/items/course/{course}/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiitemscoursecourseA093C769"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Default/items/course/{course}/GET/ApiPermission.SaCdkAppStackCatalogApiCEB8153F.GET..items.course.{course}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiitemscoursecourseGETApiPermissionSaCdkAppStackCatalogApiCEB8153FGETitemscoursecourseD9E41361"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Default/items/course/{course}/GET/ApiPermission.Test.SaCdkAppStackCatalogApiCEB8153F.GET..items.course.{course}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiitemscoursecourseGETApiPermissionTestSaCdkAppStackCatalogApiCEB8153FGETitemscoursecourse8D7E4B7C"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Default/items/course/{course}/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiitemscoursecourseGET628BEA5A"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Default/items/year/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiitemsyear3CB48041"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Default/items/year/{year}/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiitemsyearyear6D5A0A52"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Default/items/year/{year}/GET/ApiPermission.SaCdkAppStackCatalogApiCEB8153F.GET..items.year.{year}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiitemsyearyearGETApiPermissionSaCdkAppStackCatalogApiCEB8153FGETitemsyearyearC3958483"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Default/items/year/{year}/GET/ApiPermission.Test.SaCdkAppStackCatalogApiCEB8153F.GET..items.year.{year}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiitemsyearyearGETApiPermissionTestSaCdkAppStackCatalogApiCEB8153FGETitemsyearyear840B319F"
+          }
+        ],
+        "/SaCdkAppStack/CatalogApi/Default/items/year/{year}/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CatalogApiitemsyearyearGETB66518B6"
+          }
+        ],
+        "/SaCdkAppStack/DeleteItemFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeleteItemFunctionServiceRoleB2BAE34D"
+          }
+        ],
+        "/SaCdkAppStack/DeleteItemFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeleteItemFunctionServiceRoleDefaultPolicy7767DA08"
+          }
+        ],
+        "/SaCdkAppStack/DeleteItemFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeleteItemFunction6C994993"
+          }
+        ],
+        "/SaCdkAppStack/RetrieveItemFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RetrieveItemFunctionServiceRoleDA8354CA"
+          }
+        ],
+        "/SaCdkAppStack/RetrieveItemFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RetrieveItemFunctionServiceRoleDefaultPolicy0D31FBCC"
+          }
+        ],
+        "/SaCdkAppStack/RetrieveItemFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RetrieveItemFunction6C30F7F2"
+          }
+        ],
+        "/SaCdkAppStack/RetrieveAllItemFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RetrieveAllItemFunctionServiceRoleFCF7DA5E"
+          }
+        ],
+        "/SaCdkAppStack/RetrieveAllItemFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RetrieveAllItemFunctionServiceRoleDefaultPolicy65F95A48"
+          }
+        ],
+        "/SaCdkAppStack/RetrieveAllItemFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RetrieveAllItemFunctionB0B06EA4"
+          }
+        ],
+        "/SaCdkAppStack/RetrieveItemByCourseFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RetrieveItemByCourseFunctionServiceRole7EA8439F"
+          }
+        ],
+        "/SaCdkAppStack/RetrieveItemByCourseFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RetrieveItemByCourseFunctionServiceRoleDefaultPolicyA26C105F"
+          }
+        ],
+        "/SaCdkAppStack/RetrieveItemByCourseFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RetrieveItemByCourseFunction68837164"
+          }
+        ],
+        "/SaCdkAppStack/RetrieveItemByYearFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RetrieveItemByYearFunctionServiceRole92B797DB"
+          }
+        ],
+        "/SaCdkAppStack/RetrieveItemByYearFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RetrieveItemByYearFunctionServiceRoleDefaultPolicy2B18A5DC"
+          }
+        ],
+        "/SaCdkAppStack/RetrieveItemByYearFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RetrieveItemByYearFunction07D9DE56"
+          }
+        ],
+        "/SaCdkAppStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/SaCdkAppStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/SaCdkAppStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "SaCdkAppStack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}
